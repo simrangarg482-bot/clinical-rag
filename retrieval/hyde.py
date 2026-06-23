@@ -8,7 +8,6 @@ THAT. Hypothetical passages live in the same semantic neighborhood as
 real clinical guideline text, which improves recall on terse or indirect
 queries.
 
-Industry-grade properties:
   - Uses the shared call_llm() wrapper -> automatic retry/backoff, centralized logging.
   - Validates LLM output isn't empty before embedding (fail loud, not silent).
   - Returns BOTH the embedding and the hypothetical doc text, so callers

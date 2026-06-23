@@ -10,7 +10,6 @@ Graph shape:
                                    v
                               output_guard --> END
 
-Industry-grade properties:
   - State is a typed TypedDict, not a loose dict — every field's shape
     is explicit and IDE-checkable.
   - The corrective loop is BOUNDED by settings.max_self_rag_retries.

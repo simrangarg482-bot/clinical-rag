@@ -14,7 +14,6 @@ usable chunks. Instead of generating a weak/unsupported answer anyway,
 the query is rewritten (more specific medical terminology) and
 retrieval is retried, up to a capped number of attempts.
 
-Industry-grade properties:
   - Structured JSON output for relevance/support grading (not free-text
     parsing) — JSON parsing failures are caught and treated as a
     conservative "irrelevant"/"not supported" rather than crashing.

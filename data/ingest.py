@@ -1,7 +1,6 @@
 """
 Data ingestion pipeline for the Clinical RAG project.
 
-Industry-grade properties:
   - IDEMPOTENT: deterministic chunk IDs (hash of source + content) mean
     re-running ingestion on the same PDFs never creates duplicate vectors.
   - BATCHED: embeds and upserts in batches, so a 500-page PDF set doesn't

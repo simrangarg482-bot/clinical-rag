@@ -15,7 +15,6 @@ Design decision — in-memory BM25:
   the same DB instead of a separate in-memory structure. Documented here
   so this tradeoff is explicit, not accidental.
 
-Industry-grade properties:
   - BM25 index built lazily once, cached as a module-level singleton.
   - Qdrant search retried on transient failure.
   - RRF fusion uses the standard k=60 smoothing constant.

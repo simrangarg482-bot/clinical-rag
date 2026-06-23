@@ -14,7 +14,7 @@ Why this step exists, given we already have RRF-fused dense+sparse scores:
   candidate set; the cross-encoder is a slower, more accurate filter
   applied only to that small candidate set (cheap because top_k is small).
 
-Industry-grade properties:
+  
   - Model loaded once, cached as a module-level singleton (loading is slow).
   - Defensive against empty input (empty candidate list -> empty result,
     no crash on the next pipeline stage).
