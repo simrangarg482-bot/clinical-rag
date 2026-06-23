@@ -66,4 +66,4 @@ def api_ask(req: AskRequest) -> AskResponse:
 def serve_index():
     return FileResponse(STATIC_DIR / "index.html")
 
-app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
