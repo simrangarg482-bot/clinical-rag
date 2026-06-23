@@ -1,0 +1,22 @@
+[
+  {
+    "question": "What is the recommended first-line pharmacological treatment for hypertension in adults?",
+    "ground_truth": "First-line pharmacological treatment for hypertension in adults typically includes thiazide or thiazide-like diuretics, ACE inhibitors or angiotensin-receptor blockers (ARBs), and long-acting dihydropyridine calcium channel blockers (CCBs), often used as monotherapy initially or in combination depending on the patient's baseline blood pressure and risk profile."
+  },
+  {
+    "question": "What blood pressure target should be used for most adults with hypertension?",
+    "ground_truth": "Most adults with hypertension should be treated to a target blood pressure below 140/90 mmHg, with some guidelines recommending a lower target of below 130/80 mmHg for patients at higher cardiovascular risk."
+  },
+  {
+    "question": "How should diabetes and tuberculosis comorbidity be managed together?",
+    "ground_truth": "Patients with both diabetes and TB require coordinated care addressing the bidirectional relationship between the conditions: TB treatment should proceed per standard regimens while diabetes is actively managed and monitored, since uncontrolled diabetes can worsen TB treatment outcomes and TB can complicate glycemic control. Screening for diabetes is recommended in all TB patients and vice versa."
+  },
+  {
+    "question": "What collaborative activities are recommended between TB and diabetes programs?",
+    "ground_truth": "Collaborative activities include establishing mechanisms for joint coordination between TB and diabetes programs, bidirectional screening (screening TB patients for diabetes and diabetes patients for TB), and ensuring integrated case management and surveillance between the two programs."
+  },
+  {
+    "question": "What is the recommended approach to managing comorbidities in TB patients generally?",
+    "ground_truth": "TB patients should be screened for common comorbidities including HIV, diabetes, and other conditions that can affect treatment outcomes. Management requires an integrated approach where comorbid conditions are treated alongside TB therapy, with attention to drug interactions and adherence support."
+  }
+]

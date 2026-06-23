@@ -1,0 +1,122 @@
+2026-06-22 00:49:25.900 | INFO     | __main__:<module>:9 - Step 1/3 — testing OpenRouter LLM connection...
+2026-06-22 00:49:29.168 | SUCCESS  | __main__:<module>:11 - LLM responded: User Safety: safe
+2026-06-22 00:49:29.168 | INFO     | __main__:<module>:13 - Step 2/3 — testing local embedder...
+2026-06-22 00:49:29.168 | INFO     | config:get_embedder:187 - Loading embedding model: all-MiniLM-L6-v2
+2026-06-22 00:49:33.948 | SUCCESS  | __main__:<module>:15 - Embedding generated, length = 384 (expected 384)
+2026-06-22 00:49:33.948 | INFO     | __main__:<module>:18 - Step 3/3 — testing Qdrant connection...
+2026-06-22 00:49:40.206 | SUCCESS  | __main__:<module>:21 - Qdrant connected. Existing collections: [CollectionDescription(name='clinical_docs')]
+2026-06-22 00:49:40.208 | SUCCESS  | __main__:<module>:23 - All systems go. Ready for Step 2 (data ingestion).
+2026-06-22 01:52:36.459 | INFO     | server:api_ask:46 - API request: 'What is the recommended first-line treatment for hypertension?'
+2026-06-22 01:52:37.750 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'What is the recommended first-line treatment for hypertension?' ===
+2026-06-22 01:53:08.239 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:123 - Hybrid retrieve for query: 'What is the recommended first-line treatment for hypertension?' (top_k=20)
+2026-06-22 01:53:28.868 | DEBUG    | retrieval.hyde:hyde_embed:52 - HyDE passage for 'What is the recommended first-line treatment for hypertension?': The recommended first-line treatment for hypertension typically includes lifestyle modifications such as dietary changes...
+2026-06-22 01:53:28.909 | INFO     | config:get_embedder:187 - Loading embedding model: all-MiniLM-L6-v2
+2026-06-22 01:54:58.897 | INFO     | retrieval.hybrid_retrieval:_build:74 - Building in-memory BM25 index over 2202 chunks...
+2026-06-22 01:55:02.226 | SUCCESS  | retrieval.hybrid_retrieval:_build:92 - BM25 index ready (2202 docs).
+2026-06-22 01:55:02.241 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:171 - Hybrid retrieve returned 20 docs (dense_hits=20, sparse_hits=20, union=38). HyDE passage used: 'The recommended first-line treatment for hypertension typically includes lifesty...'
+2026-06-22 01:55:02.242 | INFO     | retrieval.reranker:get_reranker:37 - Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2
+2026-06-22 01:55:24.863 | DEBUG    | retrieval.reranker:rerank:70 - Re-ranking changed top-5 order.
+  Before (RRF order):     ['hypertension.pdf p.12', 'hypertension.pdf p.57', 'tb.pdf p.14', 'hypertension.pdf p.9', 'hypertension.pdf p.24']
+  After (cross-encoder):  ['hypertension.pdf p.22', 'hypertension.pdf p.9', 'hypertension.pdf p.12', 'hypertension.pdf p.57', 'hypertension.pdf p.56']
+2026-06-22 01:55:24.878 | INFO     | rag_pipeline.graph:retrieve_node:65 - Retrieved + reranked 5 candidate docs for: 'What is the recommended first-line treatment for hypertension?'
+2026-06-22 01:55:34.897 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.22]: relevant — The passage explicitly lists the recommended first‑line drug classes for hypertension treatment.
+2026-06-22 01:56:09.416 | DEBUG    | config:_call:158 - Empty content. Full response object: AIMessage(content='', additional_kwargs={'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 1024, 'prompt_tokens': 293, 'total_tokens': 1317, 'completion_tokens_details': {'accepted_prediction_tokens': None, 'audio_tokens': 0, 'reasoning_tokens': 1108, 'rejected_prediction_tokens': None, 'image_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0, 'cache_write_tokens': 0, 'video_tokens': 0}, 'cost': 0, 'is_byok': False, 'cost_details': {'upstream_inference_cost': 0, 'upstream_inference_prompt_cost': 0, 'upstream_inference_completions_cost': 0}}, 'model_name': 'liquid/lfm-2.5-1.2b-thinking-20260120:free', 'system_fingerprint': None, 'finish_reason': 'length', 'logprobs': None}, id='run--c6e3f977-0298-4173-81df-f96ac0c9ff34-0', usage_metadata={'input_tokens': 293, 'output_tokens': 1024, 'total_tokens': 1317, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 1108}})
+2026-06-22 01:56:09.416 | WARNING  | config:<lambda>:141 - LLM call failed (attempt 1/5): ValueError: LLM returned empty/invalid content (got: ''). Treating as a transient failure to trigger retry. -- retrying in 4.0s...
+2026-06-22 01:56:26.192 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.9]: relevant — The passage directly addresses first-line antihypertensive drug classes as recommended by WHO.
+2026-06-22 01:56:43.510 | WARNING  | rag_pipeline.self_rag:_parse_json_response:104 - Failed to parse expected JSON from LLM, using fallback. Raw: 'User Safety: safe'
+2026-06-22 01:56:43.510 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.12]: irrelevant — unparseable LLM response
+2026-06-22 01:57:07.357 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.57]: relevant — The passage directly addresses first-line pharmacological treatment options for hypertension, including monotherapy and combination therapy with the specified drug classes.
+2026-06-22 01:57:10.035 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.56]: relevant — The passage directly addresses first-line antihypertensive drug classes (BB, CCB, diuretics, ACE, ARB) for adults with hypertension requiring pharmacological treatment.
+2026-06-22 01:57:10.035 | INFO     | rag_pipeline.self_rag:self_rag_pipeline:173 - Relevance filtering: 4/5 chunks kept for query 'What is the recommended first-line treatment for hypertension?'
+2026-06-22 01:57:51.515 | INFO     | rag_pipeline.self_rag:check_support:156 - Support check: partially_supported — The answer correctly cites the three classes from Source 1 and the two classes from Source 2, but it adds an unsupported comparative claim that Source 1 provides the most comprehensive guidance, which is not present in the source passages.
+2026-06-22 01:57:57.754 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 02:24:07.877 | INFO     | server:api_ask:46 - API request: 'How should diabetes and tuberculosis comorbidity be managed together?'
+2026-06-22 02:24:08.624 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'How should diabetes and tuberculosis comorbidity be managed together?' ===
+2026-06-22 02:24:24.519 | WARNING  | rag_pipeline.graph:input_guard_node:56 - Input blocked: Query does not appear to be a clinical question.
+2026-06-22 02:24:24.580 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 02:24:26.231 | INFO     | server:api_ask:46 - API request: 'What is the recommended first-line treatment for hypertension?'
+2026-06-22 02:24:26.232 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'What is the recommended first-line treatment for hypertension?' ===
+2026-06-22 02:24:27.773 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:123 - Hybrid retrieve for query: 'What is the recommended first-line treatment for hypertension?' (top_k=20)
+2026-06-22 02:24:41.641 | DEBUG    | retrieval.hyde:hyde_embed:52 - HyDE passage for 'What is the recommended first-line treatment for hypertension?': The recommended first-line treatment for hypertension includes lifestyle modifications such as the DASH diet, sodium red...
+2026-06-22 02:24:41.641 | INFO     | config:get_embedder:187 - Loading embedding model: all-MiniLM-L6-v2
+2026-06-22 02:26:18.426 | INFO     | retrieval.hybrid_retrieval:_build:74 - Building in-memory BM25 index over 2202 chunks...
+2026-06-22 02:26:20.733 | SUCCESS  | retrieval.hybrid_retrieval:_build:92 - BM25 index ready (2202 docs).
+2026-06-22 02:26:20.783 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:171 - Hybrid retrieve returned 20 docs (dense_hits=20, sparse_hits=20, union=38). HyDE passage used: 'The recommended first-line treatment for hypertension includes lifestyle modific...'
+2026-06-22 02:26:20.783 | INFO     | retrieval.reranker:get_reranker:37 - Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2
+2026-06-22 02:26:26.116 | DEBUG    | retrieval.reranker:rerank:70 - Re-ranking changed top-5 order.
+  Before (RRF order):     ['hypertension.pdf p.12', 'hypertension.pdf p.57', 'hypertension.pdf p.9', 'tb.pdf p.14', 'hypertension.pdf p.24']
+  After (cross-encoder):  ['hypertension.pdf p.22', 'hypertension.pdf p.12', 'hypertension.pdf p.57', 'hypertension.pdf p.8', 'hypertension.pdf p.40']
+2026-06-22 02:26:26.132 | INFO     | rag_pipeline.graph:retrieve_node:65 - Retrieved + reranked 5 candidate docs for: 'What is the recommended first-line treatment for hypertension?'
+2026-06-22 02:26:29.153 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.22]: relevant — Passage lists WHO-recommended first‑line drug classes for hypertension.
+2026-06-22 02:26:30.951 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.12]: relevant — The passage mentions beta‑blockers as a first‑line agent, addressing the query.
+2026-06-22 02:26:32.177 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.57]: relevant — The passage outlines first-line drug options for hypertension treatment.
+2026-06-22 02:26:58.725 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.8]: irrelevant — The passage only states when to start antihypertensive therapy, not which specific first-line drug to use.
+2026-06-22 02:27:11.028 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.40]: relevant — The passage discusses first-line medication selection for hypertension, specifically favoring CCBs over thiazide diuretics or ACEi/ARBs.
+2026-06-22 02:27:11.028 | INFO     | rag_pipeline.self_rag:self_rag_pipeline:173 - Relevance filtering: 4/5 chunks kept for query 'What is the recommended first-line treatment for hypertension?'
+2026-06-22 02:27:44.092 | INFO     | rag_pipeline.self_rag:check_support:156 - Support check: partially_supported — The answer correctly cites the three first‑line classes from Source 1, but the claim that a long‑acting CCB is frequently selected to avoid electrolyte monitoring is not directly supported by the provided passages, which only state that CCB was chosen to avoid such monitoring.
+2026-06-22 02:27:52.434 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 02:28:26.726 | INFO     | server:api_ask:46 - API request: 'what is diabetes'
+2026-06-22 02:28:26.726 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'what is diabetes' ===
+2026-06-22 02:28:26.885 | WARNING  | rag_pipeline.graph:input_guard_node:56 - Input blocked: Query does not appear to be a clinical question.
+2026-06-22 02:28:26.885 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 02:29:44.590 | INFO     | server:api_ask:46 - API request: 'what is tv'
+2026-06-22 02:29:44.590 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'what is tv' ===
+2026-06-22 02:29:45.326 | WARNING  | rag_pipeline.graph:input_guard_node:56 - Input blocked: Query does not appear to be a clinical question.
+2026-06-22 02:29:45.328 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 02:31:32.127 | INFO     | server:api_ask:46 - API request: 'what is blood sugar'
+2026-06-22 02:31:32.181 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'what is blood sugar' ===
+2026-06-22 02:31:36.893 | WARNING  | rag_pipeline.graph:input_guard_node:56 - Input blocked: Query does not appear to be a clinical question.
+2026-06-22 02:31:36.908 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 09:36:40.000 | INFO     | server:api_ask:46 - API request: 'What blood pressure target should be used for most adults?'
+2026-06-22 09:36:40.425 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'What blood pressure target should be used for most adults?' ===
+2026-06-22 09:36:52.052 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:123 - Hybrid retrieve for query: 'What blood pressure target should be used for most adults?' (top_k=20)
+2026-06-22 09:36:59.109 | DEBUG    | retrieval.hyde:hyde_embed:52 - HyDE passage for 'What blood pressure target should be used for most adults?': Current guidelines recommend a blood pressure goal of less than 130/80 mm Hg for most adults, especially those with hype...
+2026-06-22 09:36:59.109 | INFO     | config:get_embedder:187 - Loading embedding model: all-MiniLM-L6-v2
+2026-06-22 09:37:39.451 | INFO     | retrieval.hybrid_retrieval:_build:74 - Building in-memory BM25 index over 2202 chunks...
+2026-06-22 09:37:42.166 | SUCCESS  | retrieval.hybrid_retrieval:_build:92 - BM25 index ready (2202 docs).
+2026-06-22 09:37:42.179 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:171 - Hybrid retrieve returned 20 docs (dense_hits=20, sparse_hits=20, union=32). HyDE passage used: 'Current guidelines recommend a blood pressure goal of less than 130/80 mm Hg for...'
+2026-06-22 09:37:42.179 | INFO     | retrieval.reranker:get_reranker:37 - Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2
+2026-06-22 09:37:48.764 | DEBUG    | retrieval.reranker:rerank:70 - Re-ranking changed top-5 order.
+  Before (RRF order):     ['hypertension.pdf p.27', 'hypertension.pdf p.55', 'hypertension.pdf p.10', 'hypertension.pdf p.58', 'hypertension.pdf p.18']
+  After (cross-encoder):  ['hypertension.pdf p.58', 'hypertension.pdf p.27', 'hypertension.pdf p.8', 'hypertension.pdf p.27', 'hypertension.pdf p.55']
+2026-06-22 09:37:48.764 | INFO     | rag_pipeline.graph:retrieve_node:65 - Retrieved + reranked 5 candidate docs for: 'What blood pressure target should be used for most adults?'
+2026-06-22 09:37:52.920 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.27]: relevant — The passage directly states the WHO-recommended blood pressure target of <140/90 mmHg for adults with hypertension without comorbidities, which applies to most adults.
+2026-06-22 09:37:52.936 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.58]: relevant — The passage directly addresses blood pressure targets for adults, matching the query.
+2026-06-22 09:37:53.635 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.27]: relevant — The passage provides a blood pressure target of <130 mmHg for high-risk patients, which is relevant to determining treatment goals for adults with hypertension.
+2026-06-22 09:38:13.188 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.8]: irrelevant — Passage mentions target blood pressure but does not specify the actual target value for most adults.
+2026-06-22 09:38:16.090 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.55]: relevant — The passage specifies exact blood pressure thresholds for treatment.
+2026-06-22 09:38:16.095 | INFO     | rag_pipeline.self_rag:self_rag_pipeline:201 - Relevance filtering: 4/5 chunks kept for query 'What blood pressure target should be used for most adults?'
+2026-06-22 09:38:35.762 | INFO     | rag_pipeline.self_rag:check_support:156 - Support check: fully_supported — The answer accurately reflects the recommendation in Source 2 for patients without comorbidities.
+2026-06-22 09:38:38.639 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 09:40:22.910 | INFO     | server:api_ask:46 - API request: 'what is blood sugar'
+2026-06-22 09:40:22.910 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'what is blood sugar' ===
+2026-06-22 09:40:23.578 | WARNING  | rag_pipeline.graph:input_guard_node:56 - Input blocked: Query does not appear to be a clinical question.
+2026-06-22 09:40:23.584 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 09:40:45.555 | INFO     | server:api_ask:46 - API request: 'what is blood pressure'
+2026-06-22 09:40:45.555 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'what is blood pressure' ===
+2026-06-22 09:40:47.432 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:123 - Hybrid retrieve for query: 'what is blood pressure' (top_k=20)
+2026-06-22 09:40:51.235 | DEBUG    | retrieval.hyde:hyde_embed:52 - HyDE passage for 'what is blood pressure': Blood pressure is the force exerted by circulating blood against the walls of arteries, measured as systolic (peak press...
+2026-06-22 09:40:53.266 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:171 - Hybrid retrieve returned 20 docs (dense_hits=20, sparse_hits=20, union=32). HyDE passage used: 'Blood pressure is the force exerted by circulating blood against the walls of ar...'
+2026-06-22 09:40:54.872 | DEBUG    | retrieval.reranker:rerank:70 - Re-ranking changed top-5 order.
+  Before (RRF order):     ['hypertension.pdf p.12', 'hypertension.pdf p.55', 'hypertension.pdf p.27', 'hypertension.pdf p.10', 'hypertension.pdf p.8']
+  After (cross-encoder):  ['hypertension.pdf p.12', 'hypertension.pdf p.12', 'hypertension.pdf p.12', 'hypertension.pdf p.27', 'hypertension.pdf p.18']
+2026-06-22 09:40:54.880 | INFO     | rag_pipeline.graph:retrieve_node:65 - Retrieved + reranked 5 candidate docs for: 'what is blood pressure'
+2026-06-22 09:40:57.000 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.27]: relevant — The passage defines target blood pressure values, directly addressing the query about blood pressure.
+2026-06-22 09:40:57.399 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.12]: relevant — The passage defines blood pressure, directly answering the query.
+2026-06-22 09:40:58.217 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.18]: relevant — The passage discusses systolic blood pressure levels and their clinical implications, directly addressing the query about blood pressure.
+2026-06-22 09:40:58.266 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.12]: relevant — The passage defines blood pressure as the pressure in blood vessels during heart contraction and relaxation, directly answering the query.
+2026-06-22 09:41:06.635 | DEBUG    | rag_pipeline.self_rag:grade_relevance:121 - Relevance check [hypertension.pdf p.12]: relevant — The passage addresses blood pressure management.
+2026-06-22 09:41:06.635 | INFO     | rag_pipeline.self_rag:self_rag_pipeline:201 - Relevance filtering: 5/5 chunks kept for query 'what is blood pressure'
+2026-06-22 09:41:35.624 | INFO     | rag_pipeline.self_rag:check_support:156 - Support check: fully_supported — The summary aligns with the source text.
+2026-06-22 09:41:36.146 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 09:44:35.391 | INFO     | server:api_ask:46 - API request: 'what is tb'
+2026-06-22 09:44:35.408 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'what is tb' ===
+2026-06-22 09:44:36.112 | WARNING  | rag_pipeline.graph:input_guard_node:56 - Input blocked: Query does not appear to be a clinical question.
+2026-06-22 09:44:36.112 | INFO     | rag_pipeline.graph:ask:180 - === Query complete ===
+2026-06-22 09:45:02.123 | INFO     | server:api_ask:46 - API request: 'what causes blood pressure'
+2026-06-22 09:45:02.124 | INFO     | rag_pipeline.graph:ask:178 - === New query: 'what causes blood pressure' ===
+2026-06-22 09:45:02.680 | DEBUG    | retrieval.hybrid_retrieval:hybrid_retrieve:123 - Hybrid retrieve for query: 'what causes blood pressure' (top_k=20)
+2026-06-22 09:46:06.075 | WARNING  | config:<lambda>:141 - LLM call failed (attempt 1/5): APITimeoutError: Request timed out. -- retrying in 4.0s...
+2026-06-22 09:47:13.288 | WARNING  | config:<lambda>:141 - LLM call failed (attempt 2/5): APITimeoutError: Request timed out. -- retrying in 4.0s...
+2026-06-22 09:48:20.617 | WARNING  | config:<lambda>:141 - LLM call failed (attempt 3/5): APITimeoutError: Request timed out. -- retrying in 8.0s...
+2026-06-22 09:49:31.846 | WARNING  | config:<lambda>:141 - LLM call failed (attempt 4/5): APITimeoutError: Request timed out. -- retrying in 16.0s...
